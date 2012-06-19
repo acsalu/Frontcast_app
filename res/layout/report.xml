@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <Button android:id="@+id/sunny_button"
+    	android:layout_width="80sp"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="20sp"
+    	android:layout_marginBottom="50sp"
+    	android:text="Sunny" />
+    
+    <Button android:id="@+id/cloudy_button"
+    	android:layout_width="80sp"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="20sp"
+    	android:layout_marginBottom="50sp"
+    	android:layout_toRightOf="@+id/sunny_button"
+    	android:text="Cloudy" />
+    
+    <Button android:id="@+id/rainy_button"
+    	android:layout_width="80sp"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="20sp"
+    	android:layout_marginBottom="50sp"
+    	android:layout_toRightOf="@+id/cloudy_button"
+    	android:text="Rainy" />
+    
+    
 
-</LinearLayout>
+</RelativeLayout>
