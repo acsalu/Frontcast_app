@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">Frontcast</string>
     <color name="blue">#41BDE2</color>
+    <string name="location_send_btn">Send</string>
+    <string name="location_input_hint">Query hint</string>
+    
 </resources>
