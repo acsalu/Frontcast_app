@@ -2,9 +2,7 @@ package com.frontcast;
 
 import java.io.IOException;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -28,14 +27,18 @@ import com.google.api.client.json.jackson.JacksonFactory;
 
 
 
-public class QueryActivity extends Activity {
+public class QueryActivity extends MapActivity {
 	
-	private static final String SERVER_URL = "http://acsalu-gaetest.appspot.com/rpc";
+	private static final String SERVER_URL = "http://frontcast-server.appspot.com/rpc";
 	private static final HttpTransport transport = new ApacheHttpTransport();
 	
 	private AutoCompleteTextView townsName;
 	private Button queryButton;
 	
+	@Override
+    protected boolean isRouteDisplayed() {
+        return false;
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

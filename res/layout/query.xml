@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@color/blue" >
     
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/location_query_bar"
@@ -35,7 +36,7 @@
         android:layout_height="fill_parent"
         android:layout_weight="1"
         android:apiKey="0516XfWg7SbTX1orgAGRo889IUDqlKemBlJK-1Q"
-        android:clickable="true" >
-    </com.google.android.maps.MapView>
+        android:clickable="true" 
+        android:enabled="true" />
 
 </LinearLayout>
