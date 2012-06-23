@@ -23,9 +23,6 @@
             android:name=".QueryActivity"
         />
         
-        <activity
-            android:name=".ResultActivity"
-        />
     </application>
 
 </manifest>
