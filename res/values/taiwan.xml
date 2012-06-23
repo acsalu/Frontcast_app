@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="towns_array">
+		<item>中正區</item>
+		<item>大同區</item>
+		<item>中山區</item>
+		<item>松山區</item>
+		<item>大安區</item>
+		<item>萬華區</item>
+		<item>信義區</item>
+		<item>士林區</item>
+		<item>北投區</item>
+		<item>內湖區</item>
+		<item>南港區</item>
+		<item>文山區</item>
+
+		<item>仁愛區</item>
+		<item>信義區</item>
+		<item>中正區</item>
+		<item>中山區</item>
+		<item>安樂區</item>
+		<item>暖暖區</item>
+		<item>七堵區</item>
+
+		<item>新興區</item>
+		<item>前金區</item>
+		<item>苓雅區</item>
+		<item>鹽埕區</item>
+		<item>鼓山區</item>
+		<item>旗津區</item>
+		<item>前鎮區</item>
+		<item>三民區</item>
+		<item>楠梓區</item>
+		<item>小港區</item>
+		<item>左營區</item>
+
+		<item>萬里鄉</item>
+		<item>金山鄉</item>
+		<item>板橋市</item>
+		<item>汐止市</item>
+		<item>深坑鄉</item>
+		<item>石碇鄉</item>
+		<item>瑞芳鎮</item>
+		<item>平溪鄉</item>
+		<item>雙溪鄉</item>
+		<item>貢寮鄉</item>
+		<item>新店市</item>
+		<item>坪林鄉</item>
+		<item>烏來鄉</item>
+		<item>永和市</item>
+		<item>中和市</item>
+		<item>土城市</item>
+		<item>三峽鎮</item>
+		<item>樹林市</item>
+		<item>鶯歌鎮</item>
+		<item>三重市</item>
+		<item>新莊市</item>
+		<item>泰山鄉</item>
+		<item>林口鄉</item>
+		<item>蘆洲市</item>
+		<item>五股鄉</item>
+		<item>八里鄉</item>
+		<item>淡水鎮</item>
+		<item>三芝鄉</item>
+
+    </string-array>
+</resources>
