@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/sunny_imagebutton"
-    	android:layout_marginLeft="30sp"
+    	android:layout_marginLeft="25sp"
     	android:layout_marginBottom="160sp"
         android:background="@null"
         android:src="@drawable/cloudy" />
@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/cloudy_imagebutton"
-    	android:layout_marginLeft="15sp"
+    	android:layout_marginLeft="25sp"
     	android:layout_marginBottom="150sp"
         android:background="@null"
         android:src="@drawable/rainy" />
