@@ -30,6 +30,33 @@
     	android:layout_toRightOf="@+id/cloudy_button"
     	android:text="Rainy" />
     
+    <Button android:id="@+id/cancel_button"
+     	android:layout_width="80sp"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="80sp"
+    	android:layout_marginBottom="120sp"
+    	android:text="Cancel"
+    	android:visibility="gone" />
     
+    <Button android:id="@+id/report_button"
+     	android:layout_width="80sp"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="30sp"
+    	android:layout_marginBottom="120sp"
+    	android:layout_toRightOf="@+id/cancel_button"
+    	android:text="Report"
+    	android:visibility="gone" />
+
+    <SeekBar
+        android:id="@+id/level_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cancel_button"
+        android:layout_alignLeft="@+id/sunny_button"
+        android:layout_alignRight="@+id/rainy_button"
+        android:layout_marginBottom="46dp"
+        android:visibility="gone" />
 
 </RelativeLayout>
