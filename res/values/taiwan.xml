@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string-array name="towns_array">
+	    <item>NTU</item>
 		<item>中正區</item>
 		<item>大同區</item>
 		<item>中山區</item>
