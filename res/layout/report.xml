@@ -5,38 +5,49 @@
     android:orientation="vertical"
     android:background="@color/blue" >
     
+    <TextView
+        android:id="@+id/reportPrompt_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="@string/report_prompt"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="25sp" />
+    
     <Button android:id="@+id/sunny_button"
     	android:layout_width="80sp"
-    	android:layout_height="wrap_content"
+    	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="20sp"
-    	android:layout_marginBottom="50sp"
+    	android:layout_marginBottom="100sp"
     	android:text="Sunny"
-    	android:background="@drawable/button_shape" />
+    	android:background="@drawable/button_shape"/>
     
     <Button android:id="@+id/cloudy_button"
     	android:layout_width="80sp"
-    	android:layout_height="wrap_content"
+    	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="20sp"
-    	android:layout_marginBottom="50sp"
+    	android:layout_marginBottom="100sp"
     	android:layout_toRightOf="@+id/sunny_button"
     	android:text="Cloudy"
     	android:background="@drawable/button_shape" />
     
     <Button android:id="@+id/rainy_button"
     	android:layout_width="80sp"
-    	android:layout_height="wrap_content"
+    	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="20sp"
-    	android:layout_marginBottom="50sp"
+    	android:layout_marginBottom="100sp"
     	android:layout_toRightOf="@+id/cloudy_button"
     	android:text="Rainy"
     	android:background="@drawable/button_shape" />
     
     <Button android:id="@+id/cancel_button"
      	android:layout_width="80sp"
-    	android:layout_height="wrap_content"
+    	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="60sp"
     	android:layout_marginBottom="120sp"
@@ -46,7 +57,7 @@
     
     <Button android:id="@+id/report_button"
      	android:layout_width="80sp"
-    	android:layout_height="wrap_content"
+    	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="30sp"
     	android:layout_marginBottom="120sp"
@@ -65,5 +76,37 @@
         android:layout_marginBottom="46dp"
         android:layout_marginLeft="30dp"
         android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/sunny_imagebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="25sp"
+    	android:layout_marginBottom="150sp"
+        android:background="@null"
+        android:src="@drawable/sunny" />
+    
+    <ImageButton
+        android:id="@+id/cloudy_imagebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/sunny_imagebutton"
+    	android:layout_marginLeft="30sp"
+    	android:layout_marginBottom="160sp"
+        android:background="@null"
+        android:src="@drawable/cloudy" />
+    
+    <ImageButton
+        android:id="@+id/rainy_imagebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/cloudy_imagebutton"
+    	android:layout_marginLeft="15sp"
+    	android:layout_marginBottom="150sp"
+        android:background="@null"
+        android:src="@drawable/rainy" />
 
 </RelativeLayout>

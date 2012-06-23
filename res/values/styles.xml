@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<style name="NewButton.Button" parent="@android:style/Widget.Button">
+	<item name="android:background">@drawable/sunny_button</item>
+</style>
+</resources>

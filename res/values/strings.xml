@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Frontcast</string>
+    <string name="report_prompt">How\'s the weather here?</string>
     <color name="blue">#41BDE2</color>
 </resources>
