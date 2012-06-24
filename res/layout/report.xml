@@ -17,33 +17,30 @@
         android:textSize="25sp" />
     
     <Button android:id="@+id/sunny_button"
-    	android:layout_width="80sp"
-    	android:layout_height="30sp"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
     	android:layout_alignParentBottom="true"
-    	android:layout_marginLeft="20sp"
+    	android:layout_marginLeft="12sp"
     	android:layout_marginBottom="100sp"
-    	android:text="Sunny"
-    	android:background="@drawable/button_shape"/>
+    	android:background="@drawable/sunny_button"/>
     
     <Button android:id="@+id/cloudy_button"
-    	android:layout_width="80sp"
-    	android:layout_height="30sp"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
     	android:layout_alignParentBottom="true"
-    	android:layout_marginLeft="20sp"
+    	android:layout_marginLeft="10sp"
     	android:layout_marginBottom="100sp"
     	android:layout_toRightOf="@+id/sunny_button"
-    	android:text="Cloudy"
-    	android:background="@drawable/button_shape" />
+    	android:background="@drawable/cloudy_button" />
     
     <Button android:id="@+id/rainy_button"
-    	android:layout_width="80sp"
-    	android:layout_height="30sp"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
     	android:layout_alignParentBottom="true"
-    	android:layout_marginLeft="20sp"
+    	android:layout_marginLeft="10sp"
     	android:layout_marginBottom="100sp"
     	android:layout_toRightOf="@+id/cloudy_button"
-    	android:text="Rainy"
-    	android:background="@drawable/button_shape" />
+    	android:background="@drawable/rainy_button" />
     
     <Button android:id="@+id/cancel_button"
      	android:layout_width="80sp"
@@ -75,38 +72,6 @@
         android:layout_alignRight="@+id/rainy_button"
         android:layout_marginBottom="46dp"
         android:layout_marginLeft="30dp"
-        android:visibility="gone" />
-
-    <ImageButton
-        android:id="@+id/sunny_imagebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-    	android:layout_marginLeft="25sp"
-    	android:layout_marginBottom="150sp"
-        android:background="@null"
-        android:src="@drawable/sunny" />
-    
-    <ImageButton
-        android:id="@+id/cloudy_imagebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/sunny_imagebutton"
-    	android:layout_marginLeft="25sp"
-    	android:layout_marginBottom="160sp"
-        android:background="@null"
-        android:src="@drawable/cloudy" />
-    
-    <ImageButton
-        android:id="@+id/rainy_imagebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/cloudy_imagebutton"
-    	android:layout_marginLeft="25sp"
-    	android:layout_marginBottom="150sp"
-        android:background="@null"
-        android:src="@drawable/rainy" />
+        android:visibility="gone" />  
 
 </RelativeLayout>
