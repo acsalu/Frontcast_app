@@ -4,6 +4,6 @@
     <string name="report_prompt">How\'s the weather here?</string>
     <color name="blue">#41BDE2</color>
     <string name="location_send_btn">Send</string>
-    <string name="location_input_hint">How's the wearer at...</string>
+    <string name="location_input_hint">How\'s the wearer at...</string>
     
 </resources>
