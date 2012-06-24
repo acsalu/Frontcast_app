@@ -3,6 +3,8 @@ package com.frontcast;
 import java.io.IOException;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +16,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -35,6 +39,11 @@ public class QueryActivity extends MapActivity {
 	private AutoCompleteTextView townsName;
 	private Button queryButton;
 	
+	private MapController mapController;
+	private MapView mapView;
+	private LocationManager locationManager;
+	private MyLocationOverlay myLocationOverlay;
+	
 	@Override
     protected boolean isRouteDisplayed() {
         return false;
@@ -47,9 +56,24 @@ public class QueryActivity extends MapActivity {
 		findViews();
 		setListeners();
 		townNameAutoCompelete();
-		
-		MapView mapView = (MapView) findViewById(R.id.mapview);
+		configureMap();
+
+	}
+	private void configureMap() {
+		mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+        //mapView.setSatellite(true);
+		mapController = mapView.getController();
+		mapController.setZoom(10); // Zoon 1 is world view
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		mapView.getOverlays().add(myLocationOverlay);
+		myLocationOverlay.runOnFirstFix(new Runnable() {
+			public void run() {
+				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
+			}
+		});
 	}
 	
 	private void setListeners() {
