@@ -62,7 +62,8 @@ public class QueryActivity extends MapActivity {
 	private void configureMap() {
 		mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
-        //mapView.setSatellite(true);
+        mapView.setSatellite(false);
+        mapView.setTraffic(true);
 		mapController = mapView.getController();
 		mapController.setZoom(10); // Zoon 1 is world view
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
