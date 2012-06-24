@@ -6,4 +6,20 @@
     <string name="location_send_btn">Send</string>
     <string name="location_input_hint">How\'s the wearer at...</string>
     
+    <string name="sunny_1"></string>
+    <string name="sunny_2"></string>
+    <string name="sunny_3"></string>
+    <string name="sunny_4"></string>
+    
+    <string name="cloudy_1"></string>
+    <string name="cloudy_2"></string>
+    <string name="cloudy_3"></string>
+    <string name="cloudy_4"></string>
+    
+    <string name="rainy_1">雨如牛毛</string>
+    <string name="rainy_2">綿綿細雨</string>
+    <string name="rainy_3">大雨滂沱</string>
+    <string name="rainy_4">狂風暴雨</string>
+    
+    
 </resources>

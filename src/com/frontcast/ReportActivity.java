@@ -18,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class ReportActivity extends Activity {
@@ -32,7 +33,7 @@ public class ReportActivity extends Activity {
 	private Button cancelButton;
 	
 	private ImageView weatherSelectedImage;
-	
+	private TextView descriptionText;
 	
 	private int weatherSelected;
 	
@@ -55,6 +56,8 @@ public class ReportActivity extends Activity {
 		cloudyButton = (Button) findViewById(R.id.cloudy_button);
 		rainyButton = (Button) findViewById(R.id.rainy_button);
 		
+		weatherSelectedImage = (ImageView) findViewById(R.id.weather_image);
+		descriptionText = (TextView) findViewById(R.id.descrpition_text);
 		levelSeekbar = (SeekBar) findViewById(R.id.level_seekbar);
 		reportButton = (Button) findViewById(R.id.report_button);
 		cancelButton = (Button) findViewById(R.id.cancel_button);
@@ -69,10 +72,13 @@ public class ReportActivity extends Activity {
 					Log.d("report weather", sender.getText().toString());
 					if (sender == sunnyButton) {
 						weatherSelected = SUNNY;
+						weatherSelectedImage.setImageDrawable(getResources().getDrawable(R.drawable.sunny));
 					} else if (sender == cloudyButton) {
 						weatherSelected = CLOUDY;
+						weatherSelectedImage.setImageDrawable(getResources().getDrawable(R.drawable.cloudy));
 					} else {
 						weatherSelected = RAINY;
+						weatherSelectedImage.setImageDrawable(getResources().getDrawable(R.drawable.rainy));
 					}
 					AnimationSet animation = new AnimationSet(true);
 					animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -120,8 +126,38 @@ public class ReportActivity extends Activity {
 				showViews();
 			}
 		});
-		
+		levelSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				switch(weatherSelected) {
+				case SUNNY:
+					break;
+				case CLOUDY:
+					break;
+				case RAINY:
+					if (progress < 25) {
+						descriptionText.setText(getString(R.string.rainy_1));
+					} else if (progress < 50) {
+						descriptionText.setText(getString(R.string.rainy_2));
+					} else if (progress < 75) {
+						descriptionText.setText(getString(R.string.rainy_3));
+					} else {
+						descriptionText.setText(getString(R.string.rainy_4));
+					}
+					break;
+				}
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {}
+			
+		});
 	}
+	
+
 	
 	private void showViews() {
 		Animation fadeIn = new AlphaAnimation(0, 1);
@@ -132,7 +168,9 @@ public class ReportActivity extends Activity {
 		fadeOut.setInterpolator(new AccelerateInterpolator());
 		fadeOut.setDuration(150);
 		
-		if (weatherSelected == NONE) {	
+		if (weatherSelected == NONE) {
+			weatherSelectedImage.startAnimation(fadeOut); weatherSelectedImage.setVisibility(View.GONE);
+			descriptionText.startAnimation(fadeOut); descriptionText.setVisibility(View.GONE);
 			levelSeekbar.startAnimation(fadeOut); levelSeekbar.setVisibility(View.GONE);
 			cancelButton.startAnimation(fadeOut); cancelButton.setVisibility(View.GONE);
 			reportButton.startAnimation(fadeOut); reportButton.setVisibility(View.GONE);
@@ -141,6 +179,8 @@ public class ReportActivity extends Activity {
 			cloudyButton.setVisibility(View.VISIBLE); cloudyButton.startAnimation(fadeIn);
 			rainyButton.setVisibility(View.VISIBLE); rainyButton.startAnimation(fadeIn);
 		} else {
+			weatherSelectedImage.setVisibility(View.VISIBLE); weatherSelectedImage.startAnimation(fadeIn);
+			descriptionText.setVisibility(View.VISIBLE); descriptionText.startAnimation(fadeIn);
 			levelSeekbar.setVisibility(View.VISIBLE); levelSeekbar.startAnimation(fadeIn);
 			cancelButton.setVisibility(View.VISIBLE); cancelButton.startAnimation(fadeIn);
 			reportButton.setVisibility(View.VISIBLE); reportButton.startAnimation(fadeIn);

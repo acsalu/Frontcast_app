@@ -47,7 +47,7 @@
     	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="60sp"
-    	android:layout_marginBottom="120sp"
+    	android:layout_marginBottom="70sp"
     	android:text="Cancel"
     	android:visibility="gone" 
     	android:background="@drawable/button_shape" />
@@ -57,12 +57,23 @@
     	android:layout_height="30sp"
     	android:layout_alignParentBottom="true"
     	android:layout_marginLeft="30sp"
-    	android:layout_marginBottom="120sp"
+    	android:layout_marginBottom="70sp"
     	android:layout_toRightOf="@+id/cancel_button"
     	android:text="Report"
     	android:visibility="gone" 
     	android:background="@drawable/button_shape" />
 
+    <TextView android:id="@+id/descrpition_text"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/level_seekbar"
+        android:layout_marginBottom="10dp"
+        android:text="傾盆大雨"
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:visibility="gone"/>
+    
     <SeekBar
         android:id="@+id/level_seekbar"
         android:layout_width="250sp"
@@ -70,8 +81,16 @@
         android:layout_above="@+id/cancel_button"
         android:layout_alignLeft="@+id/sunny_button"
         android:layout_alignRight="@+id/rainy_button"
-        android:layout_marginBottom="46dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="35dp"
+        android:layout_centerHorizontal="true"
         android:visibility="gone" />  
-
+	
+    <ImageView android:id="@+id/weather_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/rainy"
+        android:visibility="gone"/>
 </RelativeLayout>
