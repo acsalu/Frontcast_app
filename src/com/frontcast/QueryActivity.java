@@ -70,7 +70,7 @@ public class QueryActivity extends MapActivity {
 	private void townNameAutoCompelete() {
 		String[] towns = getResources().getStringArray(R.array.towns_array);
 		ArrayAdapter<String> adapter = 
-		        new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, towns);
+		        new ArrayAdapter<String>(this, R.layout.list_item, towns);
 		townsName.setAdapter(adapter);
 	}
 	
