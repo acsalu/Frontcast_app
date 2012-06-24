@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="src" path="/GuestbookClient"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-api-client-android2-1.8.0-beta-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-api-client-android2-1.8.0-beta.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/google-http-client-1.8.3-beta-sources.jar"/>
