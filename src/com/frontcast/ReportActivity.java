@@ -1,7 +1,24 @@
 package com.frontcast;
 
+import java.io.IOException;
+
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.http.json.JsonHttpContent;
+import com.google.api.client.http.json.JsonHttpParser;
+import com.google.api.client.json.jackson.JacksonFactory;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -18,10 +35,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class ReportActivity extends Activity {
+public class ReportActivity extends Activity implements LocationListener {
 	
 	private TextView promptText;
 	private Button sunnyButton;
@@ -41,6 +59,11 @@ public class ReportActivity extends Activity {
 	public static final int SUNNY = 1;
 	public static final int CLOUDY = 2;
 	public static final int RAINY = 3;
+	
+	private LocationManager lMgr;
+	private String best;
+	public static final String SERVER_URL = "http://frontcast-server.appspot.com/rpc";
+	private static final HttpTransport transport = new ApacheHttpTransport();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +103,7 @@ public class ReportActivity extends Activity {
 						weatherSelected = RAINY;
 						weatherSelectedImage.setImageDrawable(getResources().getDrawable(R.drawable.rainy));
 					}
-					AnimationSet animation = new AnimationSet(true);
-					animation.setInterpolator(new AccelerateDecelerateInterpolator());
-					animation.setDuration(500);
-					animation.setFillEnabled(true);
-					animation.setFillAfter(true);
-					
-					Display display = getWindowManager().getDefaultDisplay();
-					
+					levelSeekbar.setProgress(40);
 					showViews();
 				}
 			}
@@ -100,6 +116,7 @@ public class ReportActivity extends Activity {
 		reportButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				new ReportFrontcastTask().execute();
 				Intent intent = new Intent();
 				intent.setClass(ReportActivity.this, QueryActivity.class);
 				Bundle bundle = new Bundle();
@@ -131,8 +148,26 @@ public class ReportActivity extends Activity {
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				switch(weatherSelected) {
 				case SUNNY:
+					if (progress < 25) {
+						descriptionText.setText(getString(R.string.sunny_1));
+					} else if (progress < 50) {
+						descriptionText.setText(getString(R.string.sunny_2));
+					} else if (progress < 75) {
+						descriptionText.setText(getString(R.string.sunny_3));
+					} else {
+						descriptionText.setText(getString(R.string.sunny_4));
+					}
 					break;
 				case CLOUDY:
+					if (progress < 25) {
+						descriptionText.setText(getString(R.string.cloudy_1));
+					} else if (progress < 50) {
+						descriptionText.setText(getString(R.string.cloudy_2));
+					} else if (progress < 75) {
+						descriptionText.setText(getString(R.string.cloudy_3));
+					} else {
+						descriptionText.setText(getString(R.string.cloudy_4));
+					}
 					break;
 				case RAINY:
 					if (progress < 25) {
@@ -157,7 +192,72 @@ public class ReportActivity extends Activity {
 		});
 	}
 	
-
+	private class ReportFrontcastTask extends AsyncTask<Void, Void, Void> {
+    	private ProgressDialog Dialog = new ProgressDialog(ReportActivity.this);
+    	String fb_id;
+    	double lat;
+    	double lng;
+    	String type;
+    	int level;
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		fb_id = "1091551108";
+    		switch(weatherSelected) {
+    		case SUNNY:
+    			type = "sunny"; break;
+    		case CLOUDY:
+    			type = "cloudy"; break;
+    		case RAINY:
+    			type = "rainy"; break;
+    		}
+    		lat = 25.1789;
+    		lng = 121.5252;
+    		level = levelSeekbar.getProgress();
+    		Dialog.setMessage("Sending your message...");
+    		Dialog.show();
+    	}
+    	
+    	
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			String[] data = {"ReportFrontcast", fb_id, String.valueOf(lat), String.valueOf(lng), type, String.valueOf(level)};
+			JsonHttpContent json = new JsonHttpContent(new JacksonFactory(), data);
+			
+			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
+			HttpRequest request;
+			try {
+				request = httpRequestFactory.buildPostRequest(
+						new GenericUrl(SERVER_URL), json);
+			System.out.println("request = " + request.getUrl());
+			System.out.println("content = " + json.getData().toString());
+			String result = request.execute().parseAsString();
+			System.out.println("status: " + result);
+			return null;
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+			return null;
+		}
+    	
+		@Override
+		protected void onPostExecute(Void unused) {
+			Dialog.dismiss();
+			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_LONG).show();
+		}
+    }
+	
+	public static HttpRequestFactory createRequestFactory(final HttpTransport transport) {
+		   
+		return transport.createRequestFactory(new HttpRequestInitializer() {
+			public void initialize(HttpRequest request) {
+			    JsonHttpParser parser = new JsonHttpParser(new JacksonFactory());
+				request.addParser(parser);
+			}
+		});
+	}
 	
 	private void showViews() {
 		Animation fadeIn = new AlphaAnimation(0, 1);
@@ -189,5 +289,29 @@ public class ReportActivity extends Activity {
 			cloudyButton.startAnimation(fadeOut); cloudyButton.setVisibility(View.GONE);
 			rainyButton.startAnimation(fadeOut); rainyButton.setVisibility(View.GONE);
 		}
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
 	}
 }
