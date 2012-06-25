@@ -215,14 +215,13 @@ public class QueryActivity extends MapActivity {
     	
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			String[] data = {"GetFrontcasts", locationName};
+			String[] data = {"GetTestJson"};
 			JsonHttpContent json = new JsonHttpContent(new JacksonFactory(), data);
 			
 			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
 			HttpRequest request;
 			try {
-				request = httpRequestFactory.buildPostRequest(
-						new GenericUrl(SERVER_URL), json);
+				request = httpRequestFactory.buildPostRequest(new GenericUrl(SERVER_URL), json);
 
 				String result = request.execute().parseAsString();
 				Log.d("query_weather", result);
