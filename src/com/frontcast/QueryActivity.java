@@ -1,11 +1,13 @@
 package com.frontcast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,10 +19,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.frontcast.model.Frontcast;
+import com.frontcast.model.FrontcastList;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.OverlayItem;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -45,6 +52,14 @@ public class QueryActivity extends MapActivity {
 	private MapView mapView;
 	private LocationManager locationManager;
 	private MyLocationOverlay myLocationOverlay;
+	private FrontcastList frontcastlist;
+	private FrontcastOverlay sunnyOverlay;
+	private FrontcastOverlay cloudyOverlay;
+	private FrontcastOverlay rainyOverlay;
+	private static final GeoPoint STATION_TAIPEI   = new GeoPoint((int) (25.04192 * 1E6) , (int) (121.516981 * 1E6));
+	/*private static final String[] sunnyLevelTable  = {"小太陽呵","陽光和煦","烈日當空","汗如雨下"};
+	private static final String[] cloudyLevelTable  = {"微風輕拂","太陽探頭","擋住太陽","烏雲密佈"};
+	private static final String[] rainyLevelTable  = {"雨如牛毛","綿綿細雨","大雨滂沱","狂風暴雨"};*/
 	
 	@Override
     protected boolean isRouteDisplayed() {
@@ -59,6 +74,7 @@ public class QueryActivity extends MapActivity {
 		setListeners();
 		townNameAutoCompelete();
 		configureMap();
+		configureOverlays();
 
 	}
 	private void configureMap() {
@@ -68,6 +84,7 @@ public class QueryActivity extends MapActivity {
         mapView.setTraffic(true);
 		mapController = mapView.getController();
 		mapController.setZoom(14); // Zoon 1 is world view
+		mapController.animateTo(STATION_TAIPEI);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -77,6 +94,72 @@ public class QueryActivity extends MapActivity {
 				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
 			}
 		});
+	}
+	
+	private void configureOverlays() {
+		Drawable sun = getResources().getDrawable(R.drawable.sunny);
+		Log.d("sunny_layer", "sun");
+		sun.setBounds(0, 0, sun.getMinimumWidth(), sun.getMinimumHeight());
+		sunnyOverlay = new FrontcastOverlay(sun);
+		mapView.getOverlays().add(sunnyOverlay);
+		
+		Drawable cloud = getResources().getDrawable(R.drawable.cloudy);
+		Log.d("cloudy_layer", "cloud");
+		cloud.setBounds(0, 0, cloud.getMinimumWidth(), cloud.getMinimumHeight());
+		cloudyOverlay = new FrontcastOverlay(cloud);
+		mapView.getOverlays().add(cloudyOverlay);
+		
+		Drawable rain = getResources().getDrawable(R.drawable.rainy);
+		Log.d("rainy_layer", "rain");
+		rain.setBounds(0, 0, rain.getMinimumWidth(), rain.getMinimumHeight());
+		rainyOverlay = new FrontcastOverlay(rain);
+		mapView.getOverlays().add(rainyOverlay);
+	}
+	
+	private void setFrontcasts() {
+		for (Frontcast frontcast : frontcastlist.results) {
+			Log.d("frontcast_type", frontcast.get("type").toString());
+			GeoPoint loc = new GeoPoint((int) (frontcast.latitude * 1E6), (int) (frontcast.longitude * 1E6));
+			mapController.animateTo(loc);
+			int progress = frontcast.level;
+			String weatherLevel;
+			if(frontcast.get("type").toString()=="rainy") {
+				if (progress < 25) {
+					weatherLevel = new String(getString(R.string.rainy_1));
+				} else if (progress < 50) {
+					weatherLevel = new String(getString(R.string.rainy_2));
+				} else if (progress < 75) {
+					weatherLevel = new String(getString(R.string.rainy_3));
+				} else {
+					weatherLevel = new String(getString(R.string.rainy_4));
+				}
+				rainyOverlay.addOverlay(new OverlayItem(loc, "Rainy", weatherLevel));
+    		}
+			else if(frontcast.get("type").toString()=="cloudy") {
+				if (progress < 25) {
+					weatherLevel = new String(getString(R.string.cloudy_1));
+				} else if (progress < 50) {
+					weatherLevel = new String(getString(R.string.cloudy_2));
+				} else if (progress < 75) {
+					weatherLevel = new String(getString(R.string.cloudy_3));
+				} else {
+					weatherLevel = new String(getString(R.string.cloudy_4));
+				}
+				cloudyOverlay.addOverlay(new OverlayItem(loc, "Cloudy", weatherLevel));
+    		}
+			else if(frontcast.get("type").toString()=="sunny") {
+				if (progress < 25) {
+					weatherLevel = new String(getString(R.string.sunny_1));
+				} else if (progress < 50) {
+					weatherLevel = new String(getString(R.string.sunny_2));
+				} else if (progress < 75) {
+					weatherLevel = new String(getString(R.string.sunny_3));
+				} else {
+					weatherLevel = new String(getString(R.string.sunny_4));
+				}
+				sunnyOverlay.addOverlay(new OverlayItem(loc, "Sunny", weatherLevel));
+    		}
+		}
 	}
 	
 	private void setListeners() {
@@ -107,6 +190,7 @@ public class QueryActivity extends MapActivity {
 		townsName = (AutoCompleteTextView) findViewById(R.id.location_input);
 		queryButton = (Button) findViewById(R.id.location_query_button);
 	}
+
 	
 	private void townNameAutoCompelete() {
 		String[] towns = getResources().getStringArray(R.array.towns_array);
@@ -139,9 +223,9 @@ public class QueryActivity extends MapActivity {
 			try {
 				request = httpRequestFactory.buildPostRequest(
 						new GenericUrl(SERVER_URL), json);
-			String result = request.execute().parseAsString();
-			Log.d("query_result", result);
-			return null;
+				frontcastlist = request.execute().parseAs(FrontcastList.class);
+				setFrontcasts();
+				return null;
 			} catch (IOException e) {
 				
 				e.printStackTrace();
@@ -155,6 +239,41 @@ public class QueryActivity extends MapActivity {
 			Toast.makeText(QueryActivity.this, "done!", Toast.LENGTH_LONG).show();
 		}
     }
+	
+	public class FrontcastOverlay extends ItemizedOverlay<OverlayItem> {
+		
+		private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+		
+		public FrontcastOverlay(Drawable defaultMarker) {
+			  super(boundCenterBottom(defaultMarker));
+		}
+
+		@Override
+		protected OverlayItem createItem(int i) {
+		  return mOverlays.get(i);
+		}
+
+		@Override
+		public int size() {
+		  return mOverlays.size();
+		}
+		
+		public void addOverlay(OverlayItem overlay) {
+		    mOverlays.add(overlay);
+		    populate();
+		}
+		
+		@Override
+		protected boolean onTap(int index) {
+		  OverlayItem item = mOverlays.get(index);
+		  Toast.makeText(QueryActivity.this, item.getTitle() + "\n" + 
+				                             item.getSnippet() 
+				                             , Toast.LENGTH_LONG).show();
+		  
+		  return true;
+		}
+
+	}
 	
 	public static HttpRequestFactory createRequestFactory(final HttpTransport transport) {
 		   
