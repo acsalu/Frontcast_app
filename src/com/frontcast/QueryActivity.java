@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.frontcast.model.Frontcast;
 import com.frontcast.model.FrontcastList;
+import com.frontcast.model.Person;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
@@ -207,8 +208,8 @@ public class QueryActivity extends MapActivity {
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
-    		//Dialog.setMessage("Sending your query...");
-    		//Dialog.show();
+    		Dialog.setMessage("Sending your query...");
+    		Dialog.show();
     		
     		locationName = townsName.getText().toString();
     	}
@@ -227,6 +228,8 @@ public class QueryActivity extends MapActivity {
 				Log.d("query_weather", result);
 				//frontcastlist = request.execute().parseAs(FrontcastList.class);
 				//setFrontcasts();
+				//Person person = request.execute().parseAs(Person.class);
+				//Log.d("query_result", person.get("name").toString());
 				return null;
 			} catch (IOException e) {
 				
@@ -237,8 +240,8 @@ public class QueryActivity extends MapActivity {
     	
 		@Override
 		protected void onPostExecute(Void unused) {
-			//Dialog.dismiss();
-			Toast.makeText(QueryActivity.this, "done!", Toast.LENGTH_LONG).show();
+			Dialog.dismiss();
+			Toast.makeText(QueryActivity.this, "done!", Toast.LENGTH_SHORT).show();
 		}
     }
 	
