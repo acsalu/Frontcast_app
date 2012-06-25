@@ -2,8 +2,10 @@ package com.frontcast;
 
 import java.io.IOException;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -81,8 +83,22 @@ public class QueryActivity extends MapActivity {
 		queryButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d("Send towns name", townsName.getText().toString());
-				new GetFrontcastsTask().execute();
+				if (townsName.getText().toString().isEmpty()){
+					AlertDialog.Builder builder = new AlertDialog.Builder(QueryActivity.this);
+					builder.setMessage("You have to type in something!")
+					       .setCancelable(false)
+					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   dialog.cancel();
+					           }
+					       });
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
+				else {
+					Log.d("Send towns name", townsName.getText().toString());
+					new GetFrontcastsTask().execute();
+				}
 			}
     	});
 	}
