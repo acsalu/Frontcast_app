@@ -115,7 +115,7 @@ public class QueryActivity extends MapActivity {
     	
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			String[] data = {"PostTownName", message};
+			String[] data = {"GetFrontcasts", message};
 			JsonHttpContent json = new JsonHttpContent(new JacksonFactory(), data);
 			
 			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
@@ -123,10 +123,8 @@ public class QueryActivity extends MapActivity {
 			try {
 				request = httpRequestFactory.buildPostRequest(
 						new GenericUrl(SERVER_URL), json);
-			System.out.println("request = " + request.getUrl());
-			System.out.println("content = " + json.getData().toString());
 			String result = request.execute().parseAsString();
-			System.out.println("status: " + result);
+			Log.d("query_result", result);
 			return null;
 			} catch (IOException e) {
 				
