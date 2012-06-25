@@ -58,9 +58,6 @@ public class QueryActivity extends MapActivity {
 	private FrontcastOverlay cloudyOverlay;
 	private FrontcastOverlay rainyOverlay;
 	private static final GeoPoint STATION_TAIPEI   = new GeoPoint((int) (25.04192 * 1E6) , (int) (121.516981 * 1E6));
-	/*private static final String[] sunnyLevelTable  = {"�p�Ӷ���","����M��","�P����","���p�B�U"};
-	private static final String[] cloudyLevelTable  = {"�L������","�Ӷ����Y","�צ�Ӷ�","�Q���K�G"};
-	private static final String[] rainyLevelTable  = {"�B�p���","���ӫB","�j�B���b","�g���ɫB"};*/
 	
 	@Override
     protected boolean isRouteDisplayed() {

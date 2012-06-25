@@ -64,6 +64,7 @@ public class ReportActivity extends Activity implements LocationListener {
 	private Button sunnyButton;
 	private Button cloudyButton;
 	private Button rainyButton;
+	private TextView locationNameText;
 	
 	private SeekBar levelSeekbar;
 	private Button reportButton;
@@ -138,6 +139,7 @@ public class ReportActivity extends Activity implements LocationListener {
 		sunnyButton = (Button) findViewById(R.id.sunny_button);
 		cloudyButton = (Button) findViewById(R.id.cloudy_button);
 		rainyButton = (Button) findViewById(R.id.rainy_button);
+		locationNameText = (TextView) findViewById(R.id.locationName_text);
 		
 		weatherSelectedImage = (ImageView) findViewById(R.id.weather_image);
 		descriptionText = (TextView) findViewById(R.id.descrpition_text);
@@ -198,7 +200,7 @@ public class ReportActivity extends Activity implements LocationListener {
 				
 				// post to Facebook
 				Bundle params = new Bundle();
-	            params.putString("message", "現在外頭的天氣約莫是" + getDescription());
+	            params.putString("message", getString(R.string.report_prepend) + getDescription());
 	            //Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
 				
 	            // Move on to QueryActivity
@@ -496,6 +498,8 @@ public class ReportActivity extends Activity implements LocationListener {
     	private ProgressDialog Dialog = new ProgressDialog(ReportActivity.this);
     	double lat;
     	double lng;
+    	TextView ln;
+    	String result = null;
     	
     	@Override
     	protected void onPreExecute() {
@@ -508,7 +512,7 @@ public class ReportActivity extends Activity implements LocationListener {
 			} else {
 				// handle no location found error
 			}
-			
+			ln = locationNameText;
     		Dialog.setMessage("Fetching your location...");
     		Dialog.show();
     	}
@@ -523,7 +527,7 @@ public class ReportActivity extends Activity implements LocationListener {
 			HttpRequest request;
 			try {
 				request = httpRequestFactory.buildPostRequest(new GenericUrl(SERVER_URL), json);
-				String result = request.execute().parseAsString();
+				result = request.execute().parseAsString();
 				Log.d("query_locationname", result);
 				return null;
 			} catch (IOException e) {
@@ -537,6 +541,7 @@ public class ReportActivity extends Activity implements LocationListener {
 		protected void onPostExecute(Void unused) {
 			Dialog.dismiss();
 			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_LONG).show();
+			locationNameText.setText(result);
 		}
     }
 	
