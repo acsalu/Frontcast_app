@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
 import com.facebook.android.R;
 import com.frontcast.SessionEvents.AuthListener;
 import com.frontcast.SessionEvents.LogoutListener;
@@ -165,7 +166,15 @@ public class ReportActivity extends Activity implements LocationListener {
 		reportButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// update to Frontcast server
 				new ReportFrontcastTask().execute();
+				
+				// post to Facebook
+				Bundle params = new Bundle();
+	            params.putString("message", "Frontcast is an App that allows you to be the first-hand weather reporter!");
+	            Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
+				
+	            // Move on to QueryActivity
 				Intent intent = new Intent();
 				intent.setClass(ReportActivity.this, QueryActivity.class);
 				Bundle bundle = new Bundle();
@@ -240,6 +249,17 @@ public class ReportActivity extends Activity implements LocationListener {
 		});
 	}
 	
+    public class WallPostListener extends BaseRequestListener {
+        @Override
+        public void onComplete(final String response, final Object state) {
+            //oast.makeText(ReportActivity.this, "API Response: " + response, Toast.LENGTH_SHORT).show();
+        }
+
+        public void onFacebookError(FacebookError error) {
+            //Toast.makeText(ReportActivity.this, "Check-in Error: " + error.getMessage().toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+	
 	private class ReportFrontcastTask extends AsyncTask<Void, Void, Void> {
     	private ProgressDialog Dialog = new ProgressDialog(ReportActivity.this);
     	String fb_id;
@@ -290,6 +310,7 @@ public class ReportActivity extends Activity implements LocationListener {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
 			return null;
 		}
     	
@@ -340,72 +361,6 @@ public class ReportActivity extends Activity implements LocationListener {
 			cloudyButton.startAnimation(fadeOut); cloudyButton.setVisibility(View.GONE);
 			rainyButton.startAnimation(fadeOut); rainyButton.setVisibility(View.GONE);
 		}
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (checkLocationService()) {
-			lMgr = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-			Criteria criteria = new Criteria();
-			best = lMgr.getBestProvider(criteria, true); Log.d("location", best);
-			lMgr.requestLocationUpdates(best, 60000, 1, this);
-			Location location = lMgr.getLastKnownLocation(best);
-			if (location != null) {
-				StringBuffer msg = new StringBuffer();
-				msg.append("Latitude: " + Double.toString(location.getLatitude()));
-				msg.append("Longitude: " + Double.toString(location.getLongitude()));
-				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(this, "No location found", Toast.LENGTH_LONG).show();
-			}
-		} else {
-			new AlertDialog.Builder(ReportActivity.this)
-				.setTitle("No Location Service!")
-				.setMessage("Please enable location service beore using th App.")
-				.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-					}
-				}).show();
-		}
-	}
-	
-	private boolean checkLocationService() {
-		LocationManager status = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		return (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		lMgr.removeUpdates(this);
 	}
 	
 	/*
@@ -484,4 +439,60 @@ public class ReportActivity extends Activity implements LocationListener {
         }
 
     }
+    
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (checkLocationService()) {
+			lMgr = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			best = lMgr.getBestProvider(criteria, true); Log.d("location", best);
+			lMgr.requestLocationUpdates(best, 60000, 1, this);
+		} else {
+			new AlertDialog.Builder(ReportActivity.this)
+				.setTitle("No Location Service!")
+				.setMessage("Please enable location service beore using th App.")
+				.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+					}
+				}).show();
+		}
+	}
+	
+	private boolean checkLocationService() {
+		LocationManager status = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		return (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		lMgr.removeUpdates(this);
+	}
 }
