@@ -41,6 +41,8 @@ import android.widget.TextView;
 
 public class ReportActivity extends Activity implements LocationListener {
 	
+	
+	// UI components
 	private TextView promptText;
 	private Button sunnyButton;
 	private Button cloudyButton;
@@ -53,6 +55,7 @@ public class ReportActivity extends Activity implements LocationListener {
 	private ImageView weatherSelectedImage;
 	private TextView descriptionText;
 	
+	// weather types
 	private int weatherSelected;
 	
 	public static final int NONE = -1;
@@ -60,10 +63,17 @@ public class ReportActivity extends Activity implements LocationListener {
 	public static final int CLOUDY = 2;
 	public static final int RAINY = 3;
 	
+	// location services
 	private LocationManager lMgr;
 	private String best;
+	
+	// app engine services
 	public static final String SERVER_URL = "http://frontcast-server.appspot.com/rpc";
 	private static final HttpTransport transport = new ApacheHttpTransport();
+	
+	// facebook services
+	private static final String APP_ID = "260058654093775";
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
