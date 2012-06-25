@@ -199,7 +199,7 @@ public class ReportActivity extends Activity implements LocationListener {
 				// post to Facebook
 				Bundle params = new Bundle();
 	            params.putString("message", "現在外頭的天氣約莫是" + getDescription());
-	            Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
+	            //Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
 				
 	            // Move on to QueryActivity
 				Intent intent = new Intent();

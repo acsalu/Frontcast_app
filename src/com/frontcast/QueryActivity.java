@@ -57,9 +57,9 @@ public class QueryActivity extends MapActivity {
 	private FrontcastOverlay cloudyOverlay;
 	private FrontcastOverlay rainyOverlay;
 	private static final GeoPoint STATION_TAIPEI   = new GeoPoint((int) (25.04192 * 1E6) , (int) (121.516981 * 1E6));
-	/*private static final String[] sunnyLevelTable  = {"¤p¤Ó¶§¨þ","¶§¥ú©M·Ö","¯P¤é·íªÅ","¦½¦p«B¤U"};
-	private static final String[] cloudyLevelTable  = {"·L­·»´©Ø","¤Ó¶§±´ÀY","¾×¦í¤Ó¶§","¯Q¶³±K§G"};
-	private static final String[] rainyLevelTable  = {"«B¦p¤û¤ò","ºøºø²Ó«B","¤j«B·¼ªb","¨g­·¼É«B"};*/
+	/*private static final String[] sunnyLevelTable  = {"ï¿½pï¿½Ó¶ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½Mï¿½ï¿½","ï¿½Pï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½pï¿½Bï¿½U"};
+	private static final String[] cloudyLevelTable  = {"ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½","ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½Y","ï¿½×¦ï¿½Ó¶ï¿½","ï¿½Qï¿½ï¿½ï¿½Kï¿½G"};
+	private static final String[] rainyLevelTable  = {"ï¿½Bï¿½pï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½Ó«B","ï¿½jï¿½Bï¿½ï¿½ï¿½b","ï¿½gï¿½ï¿½ï¿½É«B"};*/
 	
 	@Override
     protected boolean isRouteDisplayed() {
@@ -207,8 +207,8 @@ public class QueryActivity extends MapActivity {
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
-    		Dialog.setMessage("Sending your query...");
-    		Dialog.show();
+    		//Dialog.setMessage("Sending your query...");
+    		//Dialog.show();
     		
     		locationName = townsName.getText().toString();
     	}
@@ -223,8 +223,11 @@ public class QueryActivity extends MapActivity {
 			try {
 				request = httpRequestFactory.buildPostRequest(
 						new GenericUrl(SERVER_URL), json);
-				frontcastlist = request.execute().parseAs(FrontcastList.class);
-				setFrontcasts();
+
+				String result = request.execute().parseAsString();
+				Log.d("query_weather", result);
+				//frontcastlist = request.execute().parseAs(FrontcastList.class);
+				//setFrontcasts();
 				return null;
 			} catch (IOException e) {
 				
@@ -235,7 +238,7 @@ public class QueryActivity extends MapActivity {
     	
 		@Override
 		protected void onPostExecute(Void unused) {
-			Dialog.dismiss();
+			//Dialog.dismiss();
 			Toast.makeText(QueryActivity.this, "done!", Toast.LENGTH_LONG).show();
 		}
     }
