@@ -6,9 +6,12 @@ import com.google.api.client.util.Key;
 import com.google.gson.annotations.SerializedName;
 
 
+
 public class FrontcastList {
 
 	//@Key
 	public List<Frontcast> results;
+	
+	//public List<Frontcast> getResult() { return results; }
 
 }

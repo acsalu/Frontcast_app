@@ -39,4 +39,7 @@ public class Frontcast {
 	
 	@SerializedName("latitude")
 	public double latitude;
+	
+	@SerializedName("type")
+	public String type;
 }
