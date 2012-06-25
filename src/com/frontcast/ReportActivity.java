@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -95,6 +97,7 @@ public class ReportActivity extends Activity implements LocationListener {
     final static int AUTHORIZE_ACTIVITY_RESULT_CODE = 0;
     String[] permissions = { "offline_access", "publish_stream", "user_photos", "publish_checkins"}; 
     
+    private static final int MENU_LOGOUT = Menu.FIRST;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,27 @@ public class ReportActivity extends Activity implements LocationListener {
 		setListeners();
 	}
 	
+	
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MENU_LOGOUT, 0, "Logout");
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case MENU_LOGOUT:
+			Toast.makeText(ReportActivity.this, "logout!", Toast.LENGTH_SHORT).show();
+			mLoginButton.logout();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+
+
 	private void findViews() {
 		mLoginButton = (LoginButton) findViewById(R.id.login);
 		promptText = (TextView) findViewById(R.id.reportPrompt_text);
@@ -131,6 +155,7 @@ public class ReportActivity extends Activity implements LocationListener {
 		mLoginButton.init(this, AUTHORIZE_ACTIVITY_RESULT_CODE, Utility.mFacebook, permissions);
 		
 		if (Utility.mFacebook.isSessionValid()) {
+			mLoginButton.setVisibility(View.GONE);
             requestUserData();
             showViews();
         }
@@ -372,6 +397,7 @@ public class ReportActivity extends Activity implements LocationListener {
         
         public void onAuthSucceed() {
         	Log.d("facebook_auth", "auth succeed");
+        	mLoginButton.setVisibility(View.GONE);
         	showViews();
         }
 
@@ -392,6 +418,7 @@ public class ReportActivity extends Activity implements LocationListener {
         
         public void onLogoutFinish() {
         	Log.d("facebook_logout", "logout finish");
+        	mLoginButton.setVisibility(View.VISIBLE);
         	weatherSelected = NONE;
 			weatherSelectedImage.setVisibility(View.GONE);
 			descriptionText.setVisibility(View.GONE);

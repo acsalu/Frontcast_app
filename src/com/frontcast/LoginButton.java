@@ -60,6 +60,13 @@ public class LoginButton extends ImageButton {
         setOnClickListener(new ButtonOnClickListener());
     }
 
+    public final void logout() {
+    	SessionEvents.onLogoutBegin();
+        AsyncFacebookRunner asyncRunner = new AsyncFacebookRunner(mFb);
+        asyncRunner.logout(getContext(), new LogoutRequestListener());
+    }
+    
+    
     private final class ButtonOnClickListener implements OnClickListener {
         /*
          * Source Tag: login_tag
@@ -75,6 +82,7 @@ public class LoginButton extends ImageButton {
             }
         }
     }
+    
 
     private final class LoginDialogListener implements DialogListener {
         @Override
