@@ -1,6 +1,9 @@
 package com.frontcast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -37,6 +40,8 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.http.json.JsonHttpParser;
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.gson.Gson;
+
 
 
 
@@ -74,8 +79,6 @@ public class QueryActivity extends MapActivity {
 		setListeners();
 		townNameAutoCompelete();
 		configureMap();
-		configureOverlays();
-
 	}
 	private void configureMap() {
 		mapView = (MapView) findViewById(R.id.mapview);
@@ -116,7 +119,7 @@ public class QueryActivity extends MapActivity {
 		mapView.getOverlays().add(rainyOverlay);
 	}
 	
-	private void setFrontcasts() {
+	/*private void setFrontcasts() {
 		for (Frontcast frontcast : frontcastlist.results) {
 			Log.d("frontcast_type", frontcast.get("type").toString());
 			GeoPoint loc = new GeoPoint((int) (frontcast.latitude * 1E6), (int) (frontcast.longitude * 1E6));
@@ -160,7 +163,7 @@ public class QueryActivity extends MapActivity {
 				sunnyOverlay.addOverlay(new OverlayItem(loc, "Sunny", weatherLevel));
     		}
 		}
-	}
+	}*/
 	
 	private void setListeners() {
 		queryButton.setOnClickListener(new OnClickListener() {
@@ -203,7 +206,7 @@ public class QueryActivity extends MapActivity {
 	private class GetFrontcastsTask extends AsyncTask<Void, Void, Void> {
     	private ProgressDialog Dialog = new ProgressDialog(QueryActivity.this);
     	String locationName;
-    	
+    	FrontcastList locallist;
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
@@ -212,7 +215,7 @@ public class QueryActivity extends MapActivity {
     		
     		locationName = townsName.getText().toString();
     	}
-    	
+
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			String[] data = {"GetFrontcasts", locationName};
@@ -223,8 +226,12 @@ public class QueryActivity extends MapActivity {
 			try {
 				request = httpRequestFactory.buildPostRequest(
 						new GenericUrl(SERVER_URL), json);
-				frontcastlist = request.execute().parseAs(FrontcastList.class);
-				setFrontcasts();
+				Gson gson = new Gson();
+				InputStream source = request.execute().getContent();
+				Reader reader = new InputStreamReader(source);
+				locallist = gson.fromJson(reader, FrontcastList.class);
+				//locallist = request.execute().parseAs(FrontcastList.class);
+				//Log.d("parse results " , result);
 				return null;
 			} catch (IOException e) {
 				
@@ -235,6 +242,9 @@ public class QueryActivity extends MapActivity {
     	
 		@Override
 		protected void onPostExecute(Void unused) {
+			//frontcastlist = locallist;
+			//setFrontcasts();
+			//configureOverlays();
 			Dialog.dismiss();
 			Toast.makeText(QueryActivity.this, "done!", Toast.LENGTH_LONG).show();
 		}
