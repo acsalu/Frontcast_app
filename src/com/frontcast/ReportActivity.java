@@ -59,6 +59,7 @@ public class ReportActivity extends Activity implements LocationListener {
 	
 	
 	// UI components
+	private TextView loginPromptText;
 	private TextView promptText;
 	private Button sunnyButton;
 	private Button cloudyButton;
@@ -132,6 +133,7 @@ public class ReportActivity extends Activity implements LocationListener {
 
 	private void findViews() {
 		mLoginButton = (LoginButton) findViewById(R.id.login);
+		loginPromptText = (TextView) findViewById(R.id.loginPrompt_text);
 		promptText = (TextView) findViewById(R.id.reportPrompt_text);
 		sunnyButton = (Button) findViewById(R.id.sunny_button);
 		cloudyButton = (Button) findViewById(R.id.cloudy_button);
@@ -155,7 +157,7 @@ public class ReportActivity extends Activity implements LocationListener {
 		mLoginButton.init(this, AUTHORIZE_ACTIVITY_RESULT_CODE, Utility.mFacebook, permissions);
 		
 		if (Utility.mFacebook.isSessionValid()) {
-			mLoginButton.setVisibility(View.GONE);
+			showLoginViews(View.GONE);
             requestUserData();
             showViews();
         }
@@ -196,7 +198,7 @@ public class ReportActivity extends Activity implements LocationListener {
 				
 				// post to Facebook
 				Bundle params = new Bundle();
-	            params.putString("message", "Frontcast is an App that allows you to be the first-hand weather reporter!");
+	            params.putString("message", "現在外頭的天氣約莫是" + getDescription());
 	            Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
 				
 	            // Move on to QueryActivity
@@ -228,41 +230,7 @@ public class ReportActivity extends Activity implements LocationListener {
 		levelSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				switch(weatherSelected) {
-				case SUNNY:
-					if (progress < 25) {
-						descriptionText.setText(getString(R.string.sunny_1));
-					} else if (progress < 50) {
-						descriptionText.setText(getString(R.string.sunny_2));
-					} else if (progress < 75) {
-						descriptionText.setText(getString(R.string.sunny_3));
-					} else {
-						descriptionText.setText(getString(R.string.sunny_4));
-					}
-					break;
-				case CLOUDY:
-					if (progress < 25) {
-						descriptionText.setText(getString(R.string.cloudy_1));
-					} else if (progress < 50) {
-						descriptionText.setText(getString(R.string.cloudy_2));
-					} else if (progress < 75) {
-						descriptionText.setText(getString(R.string.cloudy_3));
-					} else {
-						descriptionText.setText(getString(R.string.cloudy_4));
-					}
-					break;
-				case RAINY:
-					if (progress < 25) {
-						descriptionText.setText(getString(R.string.rainy_1));
-					} else if (progress < 50) {
-						descriptionText.setText(getString(R.string.rainy_2));
-					} else if (progress < 75) {
-						descriptionText.setText(getString(R.string.rainy_3));
-					} else {
-						descriptionText.setText(getString(R.string.rainy_4));
-					}
-					break;
-				}
+				descriptionText.setText(getDescription());
 			}
 
 			@Override
@@ -397,7 +365,7 @@ public class ReportActivity extends Activity implements LocationListener {
         
         public void onAuthSucceed() {
         	Log.d("facebook_auth", "auth succeed");
-        	mLoginButton.setVisibility(View.GONE);
+        	showLoginViews(View.GONE);
         	showViews();
         }
 
@@ -418,7 +386,7 @@ public class ReportActivity extends Activity implements LocationListener {
         
         public void onLogoutFinish() {
         	Log.d("facebook_logout", "logout finish");
-        	mLoginButton.setVisibility(View.VISIBLE);
+        	showLoginViews(View.VISIBLE);
         	weatherSelected = NONE;
 			weatherSelectedImage.setVisibility(View.GONE);
 			descriptionText.setVisibility(View.GONE);
@@ -521,5 +489,47 @@ public class ReportActivity extends Activity implements LocationListener {
 	protected void onPause() {
 		super.onPause();
 		lMgr.removeUpdates(this);
+	}
+	
+	private String getDescription() {
+		int progress = levelSeekbar.getProgress();
+		switch(weatherSelected) {
+		case SUNNY:
+			if (progress < 25) {
+				return (getString(R.string.sunny_1));
+			} else if (progress < 50) {
+				return (getString(R.string.sunny_2));
+			} else if (progress < 75) {
+				return (getString(R.string.sunny_3));
+			} else {
+				return (getString(R.string.sunny_4));
+			}
+		case CLOUDY:
+			if (progress < 25) {
+				return (getString(R.string.cloudy_1));
+			} else if (progress < 50) {
+				return (getString(R.string.cloudy_2));
+			} else if (progress < 75) {
+				return (getString(R.string.cloudy_3));
+			} else {
+				return (getString(R.string.cloudy_4));
+			}
+		case RAINY:
+			if (progress < 25) {
+				return (getString(R.string.rainy_1));
+			} else if (progress < 50) {
+				return (getString(R.string.rainy_2));
+			} else if (progress < 75) {
+				return (getString(R.string.rainy_3));
+			} else {
+				return (getString(R.string.rainy_4));
+			}
+		}
+		return "";
+	}
+	
+	private void showLoginViews(int visibility) {
+		mLoginButton.setVisibility(visibility);
+		loginPromptText.setVisibility(visibility);
 	}
 }
