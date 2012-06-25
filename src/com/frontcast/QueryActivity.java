@@ -82,7 +82,7 @@ public class QueryActivity extends MapActivity {
 			@Override
 			public void onClick(View v) {
 				Log.d("Send towns name", townsName.getText().toString());
-				new PostTownNameTask().execute();
+				new GetFrontcastsTask().execute();
 			}
     	});
 	}
@@ -100,9 +100,9 @@ public class QueryActivity extends MapActivity {
 		townsName.setThreshold(1);
 	}
 	
-	private class PostTownNameTask extends AsyncTask<Void, Void, Void> {
+	private class GetFrontcastsTask extends AsyncTask<Void, Void, Void> {
     	private ProgressDialog Dialog = new ProgressDialog(QueryActivity.this);
-    	String message;
+    	String locationName;
     	
     	@Override
     	protected void onPreExecute() {
@@ -110,12 +110,12 @@ public class QueryActivity extends MapActivity {
     		Dialog.setMessage("Sending your query...");
     		Dialog.show();
     		
-    		message = townsName.getText().toString();
+    		locationName = townsName.getText().toString();
     	}
     	
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			String[] data = {"PostTownName", message};
+			String[] data = {"GetFrontcasts", locationName};
 			JsonHttpContent json = new JsonHttpContent(new JacksonFactory(), data);
 			
 			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
