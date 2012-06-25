@@ -2,26 +2,24 @@ package com.frontcast;
 
 import java.io.IOException;
 
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.apache.ApacheHttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.http.json.JsonHttpParser;
-import com.google.api.client.json.jackson.JacksonFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -35,9 +33,24 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.android.AsyncFacebookRunner;
+import com.facebook.android.Facebook;
+import com.facebook.android.R;
+import com.frontcast.SessionEvents.AuthListener;
+import com.frontcast.SessionEvents.LogoutListener;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.http.json.JsonHttpContent;
+import com.google.api.client.http.json.JsonHttpParser;
+import com.google.api.client.json.jackson.JacksonFactory;
 
 public class ReportActivity extends Activity implements LocationListener {
 	
@@ -56,7 +69,7 @@ public class ReportActivity extends Activity implements LocationListener {
 	private TextView descriptionText;
 	
 	// weather types
-	private int weatherSelected;
+	private int weatherSelected = NONE;
 	
 	public static final int NONE = -1;
 	public static final int SUNNY = 1;
@@ -73,17 +86,27 @@ public class ReportActivity extends Activity implements LocationListener {
 	
 	// facebook services
 	private static final String APP_ID = "260058654093775";
-	
+	private LoginButton mLoginButton;
+    private TextView mText;
+    private ImageView mUserPic;
+    private Handler mHandler;
+    ProgressDialog dialog;
+    final static int AUTHORIZE_ACTIVITY_RESULT_CODE = 0;
+    String[] permissions = { "offline_access", "publish_stream", "user_photos", "publish_checkins"}; 
+    
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.report);
+		mHandler = new Handler();
 		findViews();
+		setupFacebook();
 		setListeners();
 	}
 	
 	private void findViews() {
+		mLoginButton = (LoginButton) findViewById(R.id.login);
 		promptText = (TextView) findViewById(R.id.reportPrompt_text);
 		sunnyButton = (Button) findViewById(R.id.sunny_button);
 		cloudyButton = (Button) findViewById(R.id.cloudy_button);
@@ -94,6 +117,22 @@ public class ReportActivity extends Activity implements LocationListener {
 		levelSeekbar = (SeekBar) findViewById(R.id.level_seekbar);
 		reportButton = (Button) findViewById(R.id.report_button);
 		cancelButton = (Button) findViewById(R.id.cancel_button);
+	}
+	
+	private void setupFacebook() {
+		Utility.mFacebook = new Facebook(APP_ID);
+        Utility.mAsyncRunner = new AsyncFacebookRunner(Utility.mFacebook);
+        
+		SessionStore.restore(Utility.mFacebook, this);
+        SessionEvents.addAuthListener(new FbAPIsAuthListener());
+        SessionEvents.addLogoutListener(new FbAPIsLogoutListener());
+        
+		mLoginButton.init(this, AUTHORIZE_ACTIVITY_RESULT_CODE, Utility.mFacebook, permissions);
+		
+		if (Utility.mFacebook.isSessionValid()) {
+            requestUserData();
+            showViews();
+        }
 	}
 	
 	private void setListeners() {
@@ -147,7 +186,6 @@ public class ReportActivity extends Activity implements LocationListener {
 				TranslateAnimation translateAnimation = null;
 				float scale = 1.0f/1.5f;
 				ScaleAnimation scaleAnimation = new ScaleAnimation(1, scale, 1, scale);
-				
 				
 				weatherSelected = NONE;
 				showViews();
@@ -213,7 +251,8 @@ public class ReportActivity extends Activity implements LocationListener {
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
-    		fb_id = "1091551108";
+    		fb_id = Utility.userUID;
+    		
     		switch(weatherSelected) {
     		case SUNNY:
     			type = "sunny"; break;
@@ -222,10 +261,17 @@ public class ReportActivity extends Activity implements LocationListener {
     		case RAINY:
     			type = "rainy"; break;
     		}
-    		lat = 25.1789;
-    		lng = 121.5252;
+    		
+    		Location location = lMgr.getLastKnownLocation(best);
+			if (location != null) {
+				lat = location.getLatitude();
+				lng = location.getLongitude();
+			} else {
+				// handle no location found error
+			}
+			
     		level = levelSeekbar.getProgress();
-    		Dialog.setMessage("Sending your message...");
+    		Dialog.setMessage("Reporting your Frontcast...");
     		Dialog.show();
     	}
     	
@@ -238,15 +284,10 @@ public class ReportActivity extends Activity implements LocationListener {
 			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
 			HttpRequest request;
 			try {
-				request = httpRequestFactory.buildPostRequest(
-						new GenericUrl(SERVER_URL), json);
-			System.out.println("request = " + request.getUrl());
-			System.out.println("content = " + json.getData().toString());
-			String result = request.execute().parseAsString();
-			System.out.println("status: " + result);
-			return null;
+				request = httpRequestFactory.buildPostRequest(new GenericUrl(SERVER_URL), json);
+				String result = request.execute().parseAsString();
+				return null;
 			} catch (IOException e) {
-				
 				e.printStackTrace();
 			}
 			return null;
@@ -324,4 +365,123 @@ public class ReportActivity extends Activity implements LocationListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (checkLocationService()) {
+			lMgr = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			best = lMgr.getBestProvider(criteria, true); Log.d("location", best);
+			lMgr.requestLocationUpdates(best, 60000, 1, this);
+			Location location = lMgr.getLastKnownLocation(best);
+			if (location != null) {
+				StringBuffer msg = new StringBuffer();
+				msg.append("Latitude: " + Double.toString(location.getLatitude()));
+				msg.append("Longitude: " + Double.toString(location.getLongitude()));
+				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(this, "No location found", Toast.LENGTH_LONG).show();
+			}
+		} else {
+			new AlertDialog.Builder(ReportActivity.this)
+				.setTitle("No Location Service!")
+				.setMessage("Please enable location service beore using th App.")
+				.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+					}
+				}).show();
+		}
+	}
+	
+	private boolean checkLocationService() {
+		LocationManager status = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		return (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		lMgr.removeUpdates(this);
+	}
+	
+	/*
+     * The Callback for notifying the application when authorization succeeds or
+     * fails.
+     */
+    public class FbAPIsAuthListener implements AuthListener {
+
+        
+        public void onAuthSucceed() {
+        	Log.d("facebook_auth", "auth succeed");
+        	showViews();
+        }
+
+        public void onAuthFail(String error) {
+        }
+    }
+
+    /*
+     * The Callback for notifying the application when log out starts and
+     * finishes.
+     */
+    public class FbAPIsLogoutListener implements LogoutListener {
+        
+        public void onLogoutBegin() {
+        	Log.d("facebook_logout", "logout begin");
+        }
+
+        
+        public void onLogoutFinish() {
+        	Log.d("facebook_logout", "logout finish");
+        	weatherSelected = NONE;
+			weatherSelectedImage.setVisibility(View.GONE);
+			descriptionText.setVisibility(View.GONE);
+			levelSeekbar.setVisibility(View.GONE);
+			cancelButton.setVisibility(View.GONE);
+			reportButton.setVisibility(View.GONE);
+			promptText.setVisibility(View.GONE);
+			sunnyButton.setVisibility(View.GONE);
+			cloudyButton.setVisibility(View.GONE);
+			rainyButton.setVisibility(View.GONE);
+        }
+    }
+    
+    public void requestUserData() {
+        Bundle params = new Bundle();
+        params.putString("fields", "name, picture");
+        //get user id, name, picture...
+        Utility.mAsyncRunner.request("me", params, new UserRequestListener());
+    }
+    
+    /*
+     * Callback for fetching current user's name, picture, uid.
+     */
+    //when user login successfully...
+    public class UserRequestListener extends BaseRequestListener {
+
+        
+        public void onComplete(final String response, final Object state) {
+            JSONObject jsonObject;
+            try {
+                jsonObject = new JSONObject(response);
+                //we get user name and id, picture from jsonObject.
+                final String picURL = jsonObject.getString("picture");
+                final String name = jsonObject.getString("name");
+                Utility.userUID = jsonObject.getString("id");
+                //renew the display.
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        //mUserPic.setImageBitmap(Utility.getBitmap(picURL));
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }
