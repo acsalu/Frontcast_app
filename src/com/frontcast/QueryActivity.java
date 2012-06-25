@@ -65,7 +65,7 @@ public class QueryActivity extends MapActivity {
         mapView.setSatellite(false);
         mapView.setTraffic(true);
 		mapController = mapView.getController();
-		mapController.setZoom(10); // Zoon 1 is world view
+		mapController.setZoom(14); // Zoon 1 is world view
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -97,6 +97,7 @@ public class QueryActivity extends MapActivity {
 		ArrayAdapter<String> adapter = 
 		        new ArrayAdapter<String>(this, R.layout.list_item, towns);
 		townsName.setAdapter(adapter);
+		townsName.setThreshold(1);
 	}
 	
 	private class PostTownNameTask extends AsyncTask<Void, Void, Void> {
