@@ -467,6 +467,7 @@ public class ReportActivity extends Activity implements LocationListener {
 			Criteria criteria = new Criteria();
 			best = lMgr.getBestProvider(criteria, true); Log.d("location", best);
 			lMgr.requestLocationUpdates(best, 60000, 1, this);
+			new GetLocationNameTask().execute();
 		} else {
 			new AlertDialog.Builder(ReportActivity.this)
 				.setTitle("No Location Service!")
@@ -490,6 +491,54 @@ public class ReportActivity extends Activity implements LocationListener {
 		super.onPause();
 		lMgr.removeUpdates(this);
 	}
+	
+	private class GetLocationNameTask extends AsyncTask<Void, Void, Void> {
+    	private ProgressDialog Dialog = new ProgressDialog(ReportActivity.this);
+    	double lat;
+    	double lng;
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		
+    		Location location = lMgr.getLastKnownLocation(best);
+			if (location != null) {
+				lat = location.getLatitude();
+				lng = location.getLongitude();
+			} else {
+				// handle no location found error
+			}
+			
+    		Dialog.setMessage("Fetching your location...");
+    		Dialog.show();
+    	}
+    	
+    	
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			String[] data = {"GetLocationName", String.valueOf(lat), String.valueOf(lng)};
+			JsonHttpContent json = new JsonHttpContent(new JacksonFactory(), data);
+			
+			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
+			HttpRequest request;
+			try {
+				request = httpRequestFactory.buildPostRequest(new GenericUrl(SERVER_URL), json);
+				String result = request.execute().parseAsString();
+				Log.d("query_locationname", result);
+				return null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+    	
+		@Override
+		protected void onPostExecute(Void unused) {
+			Dialog.dismiss();
+			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_LONG).show();
+		}
+    }
 	
 	private String getDescription() {
 		int progress = levelSeekbar.getProgress();

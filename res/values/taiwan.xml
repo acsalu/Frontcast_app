@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string-array name="towns_array">
+	    <item>National Taiwan University</item>
 	    <item>NTU</item>
 	    <item>NTNU</item>
 	    <item>NTUST</item>
