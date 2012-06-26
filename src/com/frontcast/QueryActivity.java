@@ -16,11 +16,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.frontcast.model.Frontcast;
@@ -336,11 +341,25 @@ public class QueryActivity extends MapActivity {
 		@Override
 		protected boolean onTap(int index) {
 		  OverlayItem item = mOverlays.get(index);
-		  Toast.makeText(QueryActivity.this, item.getTitle() + "\n" + 
-				                             item.getSnippet() 
-				                             , Toast.LENGTH_LONG).show();
-		  
+		  //Toast.makeText(QueryActivity.this, item.getTitle() + "\n" + item.getSnippet() , Toast.LENGTH_LONG).show();
+		  setCustomToast(item.getTitle(), item.getSnippet());
 		  return true;
+		}
+		private void setCustomToast(String title, String snippet){
+			LayoutInflater inflater = getLayoutInflater();
+			View layout = inflater.inflate(R.layout.toast_layout,
+			                               (ViewGroup) findViewById(R.id.toast_layout_root));
+
+			ImageView image = (ImageView) layout.findViewById(R.id.toast_image);
+			image.setImageResource(R.drawable.logo_medium);
+			TextView text = (TextView) layout.findViewById(R.id.toast_text);
+			text.setText(title+ "\n" +snippet);
+
+			Toast toast = new Toast(getApplicationContext());
+			toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+			toast.setDuration(Toast.LENGTH_LONG);
+			toast.setView(layout);
+			toast.show();
 		}
 
 	}
