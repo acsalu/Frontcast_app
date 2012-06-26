@@ -105,18 +105,21 @@ public class QueryActivity extends MapActivity {
 		Drawable sun = getResources().getDrawable(R.drawable.sunny);
 		Log.d("sunny_layer", "sun");
 		sun.setBounds(0, 0, sun.getMinimumWidth(), sun.getMinimumHeight());
+	
 		sunnyOverlay = new FrontcastOverlay(sun, QueryActivity.this);
 		mapView.getOverlays().add(sunnyOverlay);
 		
 		Drawable cloud = getResources().getDrawable(R.drawable.cloudy);
 		Log.d("cloudy_layer", "cloud");
 		cloud.setBounds(0, 0, cloud.getMinimumWidth(), cloud.getMinimumHeight());
+
 		cloudyOverlay = new FrontcastOverlay(cloud, QueryActivity.this);
 
 		
 		Drawable rain = getResources().getDrawable(R.drawable.rainy);
 		Log.d("rainy_layer", "rain");
 		rain.setBounds(0, 0, rain.getMinimumWidth(), rain.getMinimumHeight());
+
 		rainyOverlay = new FrontcastOverlay(rain, QueryActivity.this);
 		
 		setFrontcasts();
@@ -131,14 +134,16 @@ public class QueryActivity extends MapActivity {
 		/*Frontcast frontcast0 = frontcastlist.results.get(0);
 		GeoPoint location = new GeoPoint((int) (frontcast0.latitude * 1E6), (int) (frontcast0.longitude * 1E6));
 		mapController.animateTo(location);*/
-		GeoPoint loc;
 		for (Frontcast frontcast : frontcastlist.results) {
 			Log.d("frontcast_type", frontcast.type.toString());
-			loc = new GeoPoint((int) (frontcast.latitude * 1E6), (int) (frontcast.longitude * 1E6));
+			GeoPoint loc = new GeoPoint((int) (frontcast.latitude * 1E6), (int) (frontcast.longitude * 1E6));
 			mapController.animateTo(loc);
 			int progress = frontcast.level;
 			String weatherLevel;
-			if(frontcast.type.toString()=="rainy") {
+			String rainystring = new String("rainy");
+			String sunnystring = new String("sunny");
+			String cloudystring = new String("cloudy");
+			if(frontcast.type.toString().equals(rainystring)) {
 				if (progress < 25) {
 					weatherLevel = new String(getString(R.string.rainy_1));
 				} else if (progress < 50) {
@@ -150,7 +155,7 @@ public class QueryActivity extends MapActivity {
 				}
 				rainyOverlay.addOverlay(new OverlayItem(loc, "Rainy", weatherLevel));
     		}
-			else if(frontcast.type.toString()=="cloudy") {
+			else if(frontcast.type.toString().equals(cloudystring)) {
 				if (progress < 25) {
 					weatherLevel = new String(getString(R.string.cloudy_1));
 				} else if (progress < 50) {
@@ -162,7 +167,7 @@ public class QueryActivity extends MapActivity {
 				}
 				cloudyOverlay.addOverlay(new OverlayItem(loc, "Cloudy", weatherLevel));
     		}
-			else if(frontcast.type.toString()=="sunny") {
+			else if(frontcast.type.toString().equals(sunnystring)) {
 				if (progress < 25) {
 					weatherLevel = new String(getString(R.string.sunny_1));
 				} else if (progress < 50) {
@@ -174,8 +179,11 @@ public class QueryActivity extends MapActivity {
 				}
 				sunnyOverlay.addOverlay(new OverlayItem(loc, "Sunny", weatherLevel));
     		}
-			else Log.d("frontcast_type", "no type match");
+			else { Log.d("frontcast_type", "no type match");}
 		}
+		Log.d("Sunny size", "is " + sunnyOverlay.size());
+		Log.d("Cloudy size", "is " + cloudyOverlay.size());
+		Log.d("Rainy size", "is " + rainyOverlay.size());
 	}
 	
 	private void setListeners() {
