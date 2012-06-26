@@ -356,7 +356,7 @@ public class QueryActivity extends MapActivity {
 			text.setText(title+ "\n" +snippet);
 
 			Toast toast = new Toast(getApplicationContext());
-			toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+			toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
 			toast.setDuration(Toast.LENGTH_LONG);
 			toast.setView(layout);
 			toast.show();
