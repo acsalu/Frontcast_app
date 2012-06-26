@@ -1,6 +1,9 @@
 package com.frontcast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import org.json.JSONException;
@@ -21,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,13 +43,13 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.facebook.android.R;
 import com.frontcast.SessionEvents.AuthListener;
 import com.frontcast.SessionEvents.LogoutListener;
+import com.frontcast.model.LocationName;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -57,6 +59,9 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.http.json.JsonHttpParser;
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.gson.Gson;
+
+import com.frontcast.model.LocationName;
 
 public class ReportActivity extends Activity implements LocationListener {
 	
@@ -530,13 +535,14 @@ public class ReportActivity extends Activity implements LocationListener {
 			HttpRequest request;
 			try {
 				request = httpRequestFactory.buildPostRequest(new GenericUrl(SERVER_URL), json);
-				result = request.execute().parseAsString();
-				Log.d("query_locationname", result);
+				Gson gson = new Gson();
+				InputStream source = request.execute().getContent();
+				Reader reader = new InputStreamReader(source);
+				result = gson.fromJson(reader, LocationName.class).name;
 				return null;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 			return null;
 		}
     	
@@ -544,6 +550,7 @@ public class ReportActivity extends Activity implements LocationListener {
 		protected void onPostExecute(Void unused) {
 			Dialog.dismiss();
 			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_LONG).show();
+			/*
 			result = result.substring(1, result.length() - 2);
 			try {
 				byte[] utf8 = result.getBytes("UTF-8");
@@ -551,6 +558,8 @@ public class ReportActivity extends Activity implements LocationListener {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
+			*/
+			locationNameText.setText(result);
 		}
     }
 	
