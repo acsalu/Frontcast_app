@@ -25,5 +25,8 @@ public class myTime {
 	
 	@SerializedName("second")
 	public int second;
+	
+	@SerializedName("epoch")
+	public int epoch;
 
 }
