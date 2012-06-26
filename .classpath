@@ -12,5 +12,8 @@
 	<classpathentry exported="true" kind="lib" path="libs/guava-11.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jackson-core-asl-1.9.4-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jackson-core-asl-1.9.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gson-2.2.1-javadoc.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gson-2.2.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gson-2.2.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
