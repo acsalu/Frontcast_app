@@ -208,8 +208,9 @@ public class ReportActivity extends Activity implements LocationListener {
 				
 				// post to Facebook
 				Bundle params = new Bundle();
-	            params.putString("message", getString(R.string.report_prepend) + getDescription());
-	            //Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
+	            params.putString("message", getString(R.string.report_component0) + locationNameText.getText().toString().substring(1) + 
+	            		                    getString(R.string.report_component1) + getDescription());
+	            Utility.mAsyncRunner.request("me/feed", params, "POST", new WallPostListener(), null);
 				
 	            // Move on to QueryActivity
 				Intent intent = new Intent();
@@ -549,17 +550,8 @@ public class ReportActivity extends Activity implements LocationListener {
 		@Override
 		protected void onPostExecute(Void unused) {
 			Dialog.dismiss();
-			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_LONG).show();
-			/*
-			result = result.substring(1, result.length() - 2);
-			try {
-				byte[] utf8 = result.getBytes("UTF-8");
-				locationNameText.setText(new String(utf8, "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			*/
-			locationNameText.setText(result);
+			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_SHORT).show();
+			locationNameText.setText("@" + result);
 		}
     }
 	
