@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.frontcast.model.Frontcast;
 import com.frontcast.model.FrontcastList;
+import com.frontcast.model.myTime;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
@@ -86,7 +88,7 @@ public class QueryActivity extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         mapView.setSatellite(false);
-        mapView.setTraffic(true);
+        mapView.setTraffic(false);
 		mapController = mapView.getController();
 		mapController.setZoom(17); // Zoon 1 is world view
 		//mapController.animateTo(STATION_TAIPEI);
@@ -140,6 +142,7 @@ public class QueryActivity extends MapActivity {
 			mapController.animateTo(loc);
 			int progress = frontcast.level;
 			String weatherLevel;
+			String timeInfo = timeCalculate(frontcast.time);
 			String rainystring = new String("rainy");
 			String sunnystring = new String("sunny");
 			String cloudystring = new String("cloudy");
@@ -153,7 +156,7 @@ public class QueryActivity extends MapActivity {
 				} else {
 					weatherLevel = new String(getString(R.string.rainy_4));
 				}
-				rainyOverlay.addOverlay(new OverlayItem(loc, "Rainy", weatherLevel));
+				rainyOverlay.addOverlay(new OverlayItem(loc, weatherLevel, timeInfo));
     		}
 			else if(frontcast.type.toString().equals(cloudystring)) {
 				if (progress < 25) {
@@ -165,7 +168,7 @@ public class QueryActivity extends MapActivity {
 				} else {
 					weatherLevel = new String(getString(R.string.cloudy_4));
 				}
-				cloudyOverlay.addOverlay(new OverlayItem(loc, "Cloudy", weatherLevel));
+				cloudyOverlay.addOverlay(new OverlayItem(loc, weatherLevel, timeInfo));
     		}
 			else if(frontcast.type.toString().equals(sunnystring)) {
 				if (progress < 25) {
@@ -177,7 +180,7 @@ public class QueryActivity extends MapActivity {
 				} else {
 					weatherLevel = new String(getString(R.string.sunny_4));
 				}
-				sunnyOverlay.addOverlay(new OverlayItem(loc, "Sunny", weatherLevel));
+				sunnyOverlay.addOverlay(new OverlayItem(loc, weatherLevel, timeInfo));
     		}
 			else { Log.d("frontcast_type", "no type match");}
 		}
@@ -208,6 +211,43 @@ public class QueryActivity extends MapActivity {
 				}
 			}
     	});
+	}
+	
+	private String timeCalculate(myTime mytime){
+		Time t = new Time("GMT+8");
+		t.setToNow();
+		if (mytime.year < t.year) {
+			if ((t.year - mytime.year)==1)
+				return (""+1+" year ago");
+			else
+			    return (""+(t.year-mytime.year)+" years ago");		
+		} 
+		else if (mytime.month < t.month) {
+			if ((t.month - mytime.month)==1)
+				return (""+1+" month ago");
+			else
+			    return (""+(t.month-mytime.month)+" months ago");	
+		}
+		else if (mytime.day < t.monthDay){
+			if ((t.monthDay-mytime.day)==1)
+				return (""+1+" day ago");
+			else
+			    return (""+(t.monthDay-mytime.day)+" days ago");	
+		}
+		else if (mytime.hour < t.hour){
+			if ((t.hour-mytime.hour)==1) {
+				return (""+1+" hour ago");
+			}
+			else
+			    return (""+(t.hour-mytime.hour)+" hours ago");	
+		}
+		else {
+			if ((t.minute-mytime.minute)==1) {
+				return (""+1+" minute ago");
+			}
+			else
+			    return (""+(t.minute-mytime.minute)+" minutes ago");
+		}
 	}
 	
 	private void findViews() {

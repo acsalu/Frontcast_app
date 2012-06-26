@@ -34,8 +34,8 @@ public class Frontcast {
 	@SerializedName("longitude")
 	public double longitude;
 	
-	//@SerializedName("time")
-	//public myTime time;
+	@SerializedName("time")
+	public myTime time;
 	
 	@SerializedName("latitude")
 	public double latitude;
