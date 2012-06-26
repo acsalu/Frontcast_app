@@ -351,7 +351,7 @@ public class QueryActivity extends MapActivity {
 			                               (ViewGroup) findViewById(R.id.toast_layout_root));
 
 			ImageView image = (ImageView) layout.findViewById(R.id.toast_image);
-			image.setImageResource(R.drawable.logo_medium);
+			image.setImageResource(R.drawable.logo_small);
 			TextView text = (TextView) layout.findViewById(R.id.toast_text);
 			text.setText(title+ "\n" +snippet);
 
