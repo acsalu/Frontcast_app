@@ -1,6 +1,7 @@
 package com.frontcast;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -541,7 +542,13 @@ public class ReportActivity extends Activity implements LocationListener {
 		protected void onPostExecute(Void unused) {
 			Dialog.dismiss();
 			Toast.makeText(ReportActivity.this, "done!", Toast.LENGTH_LONG).show();
-			locationNameText.setText(result);
+			result = result.substring(1, result.length() - 2);
+			try {
+				byte[] utf8 = result.getBytes("UTF-8");
+				locationNameText.setText(new String(utf8, "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 		}
     }
 	

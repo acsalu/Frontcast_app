@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.frontcast.model.Frontcast;
 import com.frontcast.model.FrontcastList;
-import com.frontcast.model.Person;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
@@ -286,5 +285,6 @@ public class QueryActivity extends MapActivity {
 			}
 		});
 	}
+	
 	
 }
