@@ -61,14 +61,9 @@ public class QueryActivity extends MapActivity {
 	private FrontcastOverlay sunnyOverlay;
 	private FrontcastOverlay cloudyOverlay;
 	private FrontcastOverlay rainyOverlay;
-<<<<<<< HEAD
+
 	private static final GeoPoint STATION_TAIPEI   = new GeoPoint((int) (25.04192 * 1E6) , (int) (121.516981 * 1E6));
-=======
-	//private static final GeoPoint STATION_TAIPEI   = new GeoPoint((int) (25.04192 * 1E6) , (int) (121.516981 * 1E6));
-	/*private static final String[] sunnyLevelTable  = {"小太陽呵","陽光和煦","烈日當空","汗如雨下"};
-	private static final String[] cloudyLevelTable  = {"微風輕拂","太陽探頭","擋住太陽","烏雲密佈"};
-	private static final String[] rainyLevelTable  = {"雨如牛毛","綿綿細雨","大雨滂沱","狂風暴雨"};*/
->>>>>>> ded9186f3a0cf48e9212a9f8fce51daad8afae59
+
 	
 	@Override
     protected boolean isRouteDisplayed() {
@@ -106,21 +101,21 @@ public class QueryActivity extends MapActivity {
 	}
 	
 	private void configureOverlays() {
-		Drawable sun = getResources().getDrawable(R.drawable.sunny);
+		Drawable sun = getResources().getDrawable(R.drawable.sunny_pin);
 		Log.d("sunny_layer", "sun");
 		sun.setBounds(0, 0, sun.getMinimumWidth(), sun.getMinimumHeight());
 	
 		sunnyOverlay = new FrontcastOverlay(sun, QueryActivity.this);
 		mapView.getOverlays().add(sunnyOverlay);
 		
-		Drawable cloud = getResources().getDrawable(R.drawable.cloudy);
+		Drawable cloud = getResources().getDrawable(R.drawable.cloudy_pin);
 		Log.d("cloudy_layer", "cloud");
 		cloud.setBounds(0, 0, cloud.getMinimumWidth(), cloud.getMinimumHeight());
 
 		cloudyOverlay = new FrontcastOverlay(cloud, QueryActivity.this);
 
 		
-		Drawable rain = getResources().getDrawable(R.drawable.rainy);
+		Drawable rain = getResources().getDrawable(R.drawable.rainy_pin);
 		Log.d("rainy_layer", "rain");
 		rain.setBounds(0, 0, rain.getMinimumWidth(), rain.getMinimumHeight());
 
@@ -244,34 +239,20 @@ public class QueryActivity extends MapActivity {
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			String[] data = {"GetTestJson"};
+			String[] data = {"GetFrontcasts", locationName};
 			JsonHttpContent json = new JsonHttpContent(new JacksonFactory(), data);
 			
 			HttpRequestFactory httpRequestFactory = createRequestFactory(transport);
 			HttpRequest request;
 			try {
-<<<<<<< HEAD
 				request = httpRequestFactory.buildPostRequest(new GenericUrl(SERVER_URL), json);
-
-				String result = request.execute().parseAsString();
-				Log.d("query_weather", result);
-				//frontcastlist = request.execute().parseAs(FrontcastList.class);
-				//setFrontcasts();
-				//Person person = request.execute().parseAs(Person.class);
-				//Log.d("query_result", person.get("name").toString());
-=======
-				request = httpRequestFactory.buildPostRequest(
-						new GenericUrl(SERVER_URL), json);
 				Gson gson = new Gson();
 				InputStream source = request.execute().getContent();
 				Reader reader = new InputStreamReader(source);
 				locallist = gson.fromJson(reader, FrontcastList.class);
-				//locallist = request.execute().parseAs(FrontcastList.class);
-				//Log.d("parse results " , result);
->>>>>>> ded9186f3a0cf48e9212a9f8fce51daad8afae59
+
 				return null;
 			} catch (IOException e) {
-				
 				e.printStackTrace();
 			}
 			return null;
